@@ -18,6 +18,64 @@ from eegnb.devices.utils import EEG_INDICES, SAMPLE_FREQS
 sns.set_context('talk')
 sns.set_style('white')
 
+def permute_events(indexOfInterest):
+    low = []
+    high = []
+    neither = []
+    for i in range(444444):
+        if len(str(i)) >= indexOfInterest + 1:
+            if int(str(i)[indexOfInterest]) == 1 and i >= pow(10, 5 - indexOfInterest) :
+                low.append(i)
+            elif int(str(i)[indexOfInterest]) == 2 and i >= pow(10, 5 - indexOfInterest) :
+                high.append(i)
+            elif int(str(i)[indexOfInterest]) == 3 and i >= pow(10, 5 - indexOfInterest) :
+                neither.append(i)
+            elif int(str(i)[indexOfInterest]) == 4 and i >= pow(10, 5 - indexOfInterest) :
+                neither.append(i)
+    return low, high, neither
+
+
+def replaceMarkers(events, newMarkers):
+
+    newEvents = events
+    j = 0
+    for i in range(len(events)):
+        if events[i][2] != 99:
+            newEvents[i][2] = newMarkers[j]
+            j = j + 1
+        elif events[i][2] == 99:
+            j = 0
+            
+    return newEvents
+
+def maketonesnums(num):
+    newArray = []
+    for i in range(num):
+        newArray.append(90000+i)
+    return newArray
+
+def makeoddball(inputs, rep):
+    #based on inputs, creating oddball paradigms markers depending on "switch"
+    value = inputs[0]
+    count = 0
+    markerArray = []
+    for i in range(len(inputs)):
+        if inputs[i] == value:
+            count += 1
+            if count == rep:
+                markerArray.append(1)
+            else:
+                markerArray.append(3)
+        else:
+            if count == rep + 1:
+                markerArray.append(2)
+            
+            else:
+                markerArray.append(4)
+            value = inputs[i]
+            count = 1
+    return markerArray
+
 
 def load_csv_as_raw(filename, sfreq, ch_ind, aux_ind=None, replace_ch_names=None, verbose=1):
     """"""
